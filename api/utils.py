@@ -20,12 +20,17 @@ def yt_search(key, query, max_results=10):
             "pageToken": page_token if page_token else "",
         }
         response = requests.get(url, params=params).json()
-        print(response.keys(), flush=True)
         for item in response["items"]:
+            video_url = f"https://www.youtube.com/watch?v={item['id']['videoId']}"
+            exists = YTVideo.objects.filter(
+                video_url=video_url,
+            )
+            if exists:
+                continue
             item = {
                 "title": item["snippet"]["title"],
                 "description": item["snippet"]["description"],
-                "video_url": f"https://www.youtube.com/watch?v={item['id']['videoId']}",
+                "video_url": video_url,
                 "published_at": item["snippet"]["publishedAt"],
                 "channel_title": item["snippet"]["channelTitle"],
                 "thumbnail_url": item["snippet"]["thumbnails"]["default"]["url"],
