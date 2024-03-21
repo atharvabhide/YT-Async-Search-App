@@ -15,18 +15,25 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-exists = load_dotenv()
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOGS_DIR = os.path.join(BASE_DIR, "logs")
+CELERY_LOG_DIR = os.path.join(LOGS_DIR, "celery")
+
+if not os.path.exists(LOGS_DIR):
+    os.mkdir(LOGS_DIR)
+    os.mkdir(CELERY_LOG_DIR)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY") if exists else os.environ["SECRET_KEY"]
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -46,6 +53,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "api",
     "drf_yasg",
+    "django_filters",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -85,11 +94,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME") if exists else os.environ["DB_NAME"],
-        "USER": os.getenv("DB_USER") if exists else os.environ["DB_USER"],
-        "PASSWORD": os.getenv("DB_PASS") if exists else os.environ["DB_PASS"],
-        "HOST": os.getenv("DB_HOST") if exists else os.environ["DB_HOST"],
-        "PORT": os.getenv("DB_PORT") if exists else os.environ["DB_PORT"],
+        "NAME": os.environ["DB_NAME"],
+        "USER": os.environ["DB_USER"],
+        "PASSWORD": os.environ["DB_PASS"],
+        "HOST": os.environ["DB_HOST"],
+        "PORT": os.environ["DB_PORT"],
     },
 }
 
@@ -146,3 +155,8 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ],
 }
+
+
+# Celery Configuration
+
+CELERY_BROKER_URL = "amqp://admin:admin@ytasyncsearch-rabbitmq"

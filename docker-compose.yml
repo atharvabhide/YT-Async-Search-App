@@ -1,0 +1,103 @@
+version: "3.1"
+name: ytasyncsearch
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "ytasyncsearch-backend"
+    user: "1000:1000"
+    environment:
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_HOST: ytasyncsearch-db
+      DB_PORT: 5432
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/opt/:Z
+    ports:
+      - 8000:8000
+    networks:
+      - ytasyncsearch-network
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:14
+    container_name: "ytasyncsearch-db"
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5432:5432
+    networks:
+      - ytasyncsearch-network
+    expose:
+      - 5432
+    volumes:
+      - ytasyncsearch-db:/var/lib/postgresql/data
+
+  rabbit-mq:
+    image: rabbitmq:3.7-management
+    restart: always
+    container_name: "ytasyncsearch-rabbitmq"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - ytasyncsearch-network
+  
+  celery:
+    container_name: "ytasyncsearch-celery"
+    build: .
+    command: celery -A core worker -l INFO  -E -f /opt/logs/celery/celery.logs
+    volumes:
+      - .:/opt/
+    depends_on:
+      - rabbit-mq
+      - backend
+    environment:
+      -  DJANGO_SETTINGS_MODULE=core.settings
+      -  DB_NAME=postgres
+      -  DB_USER=postgres
+      -  DB_PASS=postgres
+      -  DB_HOST=ytasyncsearch-db
+      -  DB_PORT=5432
+    networks:
+      - ytasyncsearch-network
+  
+  celery-beat:
+    container_name: "ytasyncsearch-celery-beat"
+    build: .
+    command: celery -A core beat -l INFO -f /opt/logs/celery/celery.logs
+    volumes:
+      - .:/opt/
+    depends_on:
+      - rabbit-mq
+      - backend
+      - celery
+    environment:
+      -  DJANGO_SETTINGS_MODULE=core.settings
+      -  DB_NAME=postgres
+      -  DB_USER=postgres
+      -  DB_PASS=postgres
+      -  DB_HOST=ytasyncsearch-db
+      -  DB_PORT=5432
+    networks:
+      - ytasyncsearch-network
+
+volumes:
+  ytasyncsearch-backend: 
+  ytasyncsearch-db:
+
+networks:
+  ytasyncsearch-network:
+    driver: bridge
