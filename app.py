@@ -11,6 +11,7 @@ def fetch_videos(url):
         st.error(f"Failed to fetch videos: {e}")
         return {"results": [], "next": None, "previous": None}
 
+
 def get_filters():
     with st.sidebar.form(key="grid_filters"):
         title_filter = st.text_input("Filter by Title:")
@@ -31,6 +32,7 @@ def get_filters():
 
     return filters
 
+
 def display_videos(videos):
     n_cols = 5
     n_rows = (len(videos) + n_cols - 1) // n_cols
@@ -42,23 +44,24 @@ def display_videos(videos):
         thumbnail_url = video["thumbnail_url"]
         cols[video_index].image(thumbnail_url, caption=video["title"])
 
+
 def main():
     st.title("YouTube Video Grid")
     st.sidebar.header("Configuration")
 
     filters = get_filters()
-    base_url = 'http://127.0.0.1:8000/videos/'
-    url = base_url + '?' + '&'.join(f'{k}={v}' for k, v in filters.items())
+    base_url = "http://127.0.0.1:8000/videos/"
+    url = base_url + "?" + "&".join(f"{k}={v}" for k, v in filters.items())
 
     # Fetch initial data to get total pages
     initial_data = fetch_videos(url)
-    total_pages = initial_data['count'] // 10
+    total_pages = initial_data["count"] // 10
 
     # Create a select box for the page number
     page_number = st.sidebar.selectbox("Page Number", options=range(1, total_pages + 1))
 
     # Modify the url to include the page number
-    url += f'&page={page_number}'
+    url += f"&page={page_number}"
 
     # Fetch and display videos for the selected page
     data = fetch_videos(url)
@@ -68,6 +71,7 @@ def main():
         # Refresh the videos for the selected page
         data = fetch_videos(url)
         display_videos(data["results"])
+
 
 if __name__ == "__main__":
     main()
