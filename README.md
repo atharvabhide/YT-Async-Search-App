@@ -1,6 +1,6 @@
 ## YouTube Async Search Application
 
-This is a simple application that allows you to search for YouTube videos asynchronously. It uses the YouTube API to fetch the search results and display them on the page. The application is built using Django REST framework and Streamlit. Celery is used to handle the asynchronous tasks.
+This is a simple application that allows you to search for YouTube videos asynchronously. It uses the YouTube API to fetch the search results and display them on the page. The application is built using Django REST framework and Streamlit. Celery is used to handle the asynchronous tasks i.e. for polling the API after every <strong>10</strong> seconds.
 Containarized using Docker.
 
 ### Requirements
