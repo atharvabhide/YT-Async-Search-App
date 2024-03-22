@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-
-
-load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,7 +29,7 @@ if not os.path.exists(LOGS_DIR):
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "0pyo)#iu6%&bt(m69hmq(&45*w!=%))%w*30&4l5^ip$v+w$k3"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -55,6 +51,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "django_filters",
     "django_extensions",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -160,3 +157,10 @@ REST_FRAMEWORK = {
 # Celery Configuration
 
 CELERY_BROKER_URL = "amqp://admin:admin@ytasyncsearch-rabbitmq"
+
+
+# Cors Configuration
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8051",
+    "http://localhost:8052",
+]
