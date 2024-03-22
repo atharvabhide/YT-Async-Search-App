@@ -7,6 +7,18 @@ from rest_framework.response import Response
 
 
 class YTVideoListView(ListAPIView):
+    """
+    List view for YTVideo model
+
+    Attributes:
+        serializer_class (YTVideoSerializer): Serializer class for YTVideo model
+        pagination_class (PageNumberPagination): Pagination class for YTVideo model
+        filterset_class (YTVideoFilter): Filter class for YTVideo model
+
+    Methods:
+        get: Method to get all the YTVideo objects
+    """
+
     serializer_class = YTVideoSerializer
     pagination_class = PageNumberPagination
     filterset_class = YTVideoFilter

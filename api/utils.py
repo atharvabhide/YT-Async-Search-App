@@ -4,6 +4,17 @@ from api.models import YTVideo
 
 
 def yt_search(key, query, max_results=10):
+    """
+    Function to call the YouTube search API
+
+    Args:
+        key (str): Google API key
+        query (str): Search query
+        max_results (int): Maximum number of results
+
+    Returns:
+        dict: Response from the API
+    """
     try:
         page_token = (
             YTVideo.objects.last().next_page_token if YTVideo.objects.last() else None

@@ -3,6 +3,15 @@ import requests
 
 
 def fetch_videos(url):
+    """
+    Function to fetch videos from the API
+
+    Args:
+        url (str): URL to fetch videos
+
+    Returns:
+        dict: Response from the API
+    """
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -13,6 +22,12 @@ def fetch_videos(url):
 
 
 def get_filters():
+    """
+    Function to get filters from the user
+
+    Returns:
+        dict: Filters from the user
+    """
     with st.sidebar.form(key="grid_filters"):
         title_filter = st.text_input("Filter by Title:")
         channel_filter = st.text_input("Filter by Channel:")
@@ -34,6 +49,15 @@ def get_filters():
 
 
 def display_videos(videos):
+    """
+    Function to display videos in a grid
+
+    Args:
+        videos (list): List of videos
+
+    Returns:
+        None
+    """
     n_cols = 5
     n_rows = (len(videos) + n_cols - 1) // n_cols
     rows = [st.container() for _ in range(n_rows)]
@@ -46,6 +70,12 @@ def display_videos(videos):
 
 
 def main():
+    """
+    Main function for the app
+
+    Returns:
+        None
+    """
     st.title("YouTube Video Grid")
     st.sidebar.header("Configuration")
 

@@ -4,6 +4,22 @@ from uuid import uuid4
 
 
 class YTVideo(models.Model):
+    """
+    Model class for YouTube Video
+
+    Attributes:
+        id (UUIDField): Unique identifier for the video
+        title (CharField): Title of the video
+        description (TextField): Description of the video
+        video_url (URLField): URL of the video
+        published_at (DateTimeField): Published date of the video
+        channel_title (CharField): Title of the channel
+        thumbnail_url (URLField): URL of the thumbnail
+        next_page_token (CharField): Token for the next page of videos
+        created_at (DateTimeField): Created date of the video
+        updated_at (DateTimeField): Updated date of the video
+    """
+
     id = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, verbose_name="ID"
     )
